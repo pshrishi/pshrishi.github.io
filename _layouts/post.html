@@ -60,7 +60,15 @@
   </footer>
 </div><!-- /.footer-wrapper -->
 
-{% include scripts.html %}	        
-
+{% include scripts.html %}          
+ <script>
+      var width = $(".entry-content").width() - 20;
+      gapi.comments.render('comments', {
+          href: window.location,
+          width: width,
+          first_party_property: 'BLOGGER',
+          view_type: 'FILTERED_POSTMOD'
+      });
+ </script>
 </body>
 </html>
