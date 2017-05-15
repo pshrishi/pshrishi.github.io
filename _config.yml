@@ -14,14 +14,14 @@ owner:
   bio:            "A man of mystery and power, whose power is exceeded only by his mystery."
   email:          Girish.Patil@live.in
   # Social networking links used in footer. Update and remove as you like.
-  twitter:        Czarconius
+  twitter:        pshrishi
   facebook:       PS.Hrishi
   github:         pshrishi
   stackexchange:  
   linkedin:       pshrishi
-  instagram:      
+  instagram:      pshrishi
   flickr:         
-  tumblr:         
+  tumblr:         pshrishi
   # google plus id, include the '+', eg +mmistakes
   google_plus:    
 
@@ -35,7 +35,7 @@ google_verify:
 bing_verify:         
 
 # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-timezone:    America/New_York
+timezone:    America/Los_Angeles
 future:      true
 highlighter: pygments
 markdown:    kramdown
