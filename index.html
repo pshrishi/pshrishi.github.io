@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sameep — Nearby reminders for saved places</title>
+  <meta name="description" content="Sameep quietly reminds you when you're near places you saved from Maps, Instagram, Zomato, Swiggy, and more." />
+  <style>
+    :root{
+      --bg:#FBF7F1;
+      --card:rgba(255,255,255,.72);
+      --card2:#fffdf8;
+      --text:#1E232B;
+      --muted:#656C78;
+      --line:rgba(30,35,43,.10);
+      --accent:#F05A28;
+      --accent2:#D94B23;
+      --accentSoft:rgba(240,90,40,.12);
+      --gold:#D39A4A;
+      --shadow:0 20px 60px rgba(54,27,14,.08);
+      --radius:30px;
+      --radius2:22px;
+      --max:1200px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(240,90,40,.10), transparent 22%),
+        radial-gradient(circle at 90% 16%, rgba(211,154,74,.09), transparent 18%),
+        linear-gradient(180deg, #fef9f3 0%, var(--bg) 100%);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    body:before{
+      content:"";
+      position:fixed; inset:0; pointer-events:none; opacity:.04;
+      background-image:linear-gradient(45deg, transparent 49%, rgba(30,35,43,.8) 50%, transparent 51%);
+      background-size:96px 96px;
+      mask-image:linear-gradient(to bottom, rgba(0,0,0,.18), transparent 72%);
+    }
+    .wrap{max-width:var(--max); margin:0 auto; padding:26px 20px 72px; position:relative; z-index:1}
+    .top{display:flex; justify-content:space-between; align-items:center; gap:16px; padding:10px 0 28px}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.2px; text-decoration:none; color:inherit}
+    .logo{width:44px; height:44px; flex:none; display:block}
+    .pill{padding:10px 14px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.5); backdrop-filter:blur(12px); color:var(--muted); font-size:14px; white-space:nowrap}
+    .hero{display:grid; grid-template-columns:1.08fr .92fr; gap:28px; align-items:center; margin-top:14px}
+    h1{font-size:clamp(44px,6vw,78px); line-height:.95; margin:0 0 18px; letter-spacing:-.05em; max-width:11ch}
+    .lead{font-size:18px; line-height:1.75; color:var(--muted); margin:0 0 28px; max-width:58ch}
+    .cta{display:flex; gap:14px; flex-wrap:wrap; margin:0 0 24px}
+    .btn{border:none; border-radius:999px; padding:14px 18px; font-weight:700; font-size:15px; cursor:pointer; transition:.2s ease; text-decoration:none; display:inline-flex; align-items:center; justify-content:center}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 18px 40px rgba(240,90,40,.22)}
+    .btn.secondary{background:rgba(255,255,255,.58); color:var(--text); border:1px solid var(--line)}
+    .btn:hover{transform:translateY(-1px)}
+    .chips{display:flex; flex-wrap:wrap; gap:10px}
+    .chip{padding:9px 12px; border-radius:999px; background:rgba(255,255,255,.58); border:1px solid var(--line); font-size:13px; color:#3B4454}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.62)); border:1px solid rgba(30,35,43,.08); border-radius:34px; box-shadow:var(--shadow); backdrop-filter:blur(18px); overflow:hidden; position:relative}
+    .mock{padding:18px}
+    .mock:before{content:""; position:absolute; inset:auto -48px -48px auto; width:220px; height:220px; border-radius:50%; background:radial-gradient(circle, rgba(240,90,40,.11), transparent 68%); pointer-events:none}
+    .mock-top{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px}
+    .status{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:13px}
+    .dot{width:10px; height:10px; border-radius:50%; background:#3DB56E; box-shadow:0 0 0 6px rgba(61,181,110,.12)}
+    .mini{font-size:12px; color:var(--muted)}
+    .card{background:var(--card2); border:1px solid rgba(30,35,43,.08); border-radius:24px; padding:16px; margin-top:14px}
+    .place{display:flex; justify-content:space-between; gap:12px; align-items:flex-start}
+    .place h3{margin:0 0 6px; font-size:18px; letter-spacing:-.02em}
+    .place p{margin:0; color:var(--muted); font-size:14px; line-height:1.5}
+    .badge{padding:7px 10px; border-radius:999px; background:rgba(240,90,40,.12); color:var(--accent); font-size:12px; font-weight:700; white-space:nowrap}
+    .row{display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center; margin-top:14px}
+    .label{font-size:12px; color:var(--muted); margin-bottom:8px}
+    .slider{height:8px; border-radius:999px; background:linear-gradient(90deg, rgba(240,90,40,.26), rgba(211,154,74,.68)); position:relative}
+    .slider:after{content:""; position:absolute; left:70%; top:50%; transform:translate(-50%,-50%); width:16px; height:16px; border-radius:50%; background:#fff; border:4px solid var(--accent); box-shadow:0 8px 16px rgba(0,0,0,.10)}
+    .schedule{text-align:right}
+    .schedule strong{display:block; font-size:15px; letter-spacing:-.01em}
+    .notif{display:flex; gap:12px; align-items:flex-start; padding:14px; border-radius:20px; background:rgba(240,90,40,.06); border:1px solid rgba(30,35,43,.08); margin-top:14px}
+    .icon{width:38px; height:38px; border-radius:14px; display:grid; place-items:center; background:rgba(255,255,255,.74); color:var(--accent); font-weight:800; flex:none}
+    .notif strong{display:block; font-size:14px; margin-bottom:4px}
+    .notif p{margin:0; color:var(--muted); font-size:13px; line-height:1.5}
+    .section{margin-top:24px; padding:26px 28px; border-radius:34px; background:rgba(255,255,255,.42); border:1px solid rgba(30,35,43,.08)}
+    .section h2{margin:0 0 10px; font-size:26px; letter-spacing:-.03em}
+    .section p{margin:0; color:var(--muted); line-height:1.75; max-width:68ch}
+    .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px}
+    .step{padding:18px; border-radius:22px; background:rgba(255,255,255,.72); border:1px solid var(--line)}
+    .num{display:inline-grid; place-items:center; width:30px; height:30px; border-radius:10px; background:rgba(240,90,40,.14); color:var(--accent); font-weight:800; margin-bottom:12px}
+    .step strong,.feature h4{display:block; font-size:16px; margin-bottom:8px}
+    .step p,.feature p{color:var(--muted); line-height:1.65; font-size:14px; margin:0}
+    .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:26px}
+    .feature{padding:18px; border-radius:24px; background:rgba(255,255,255,.58); border:1px solid var(--line); min-height:152px}
+    .feature .icon{margin-bottom:12px}
+    .section-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:20px; align-items:center; margin-top:16px}
+    .heritage{position:relative; overflow:hidden}
+    .pattern{height:100%; min-height:220px; border-radius:26px; background:linear-gradient(135deg, rgba(255,255,255,.76), rgba(255,255,255,.46)); border:1px solid rgba(30,35,43,.08); position:relative; overflow:hidden}
+    .pattern:before{content:""; position:absolute; inset:18px; border-radius:22px; border:1px dashed rgba(30,35,43,.10); background:radial-gradient(circle at 50% 50%, rgba(240,90,40,.08), transparent 42%); opacity:.9}
+    .pattern:after{content:""; position:absolute; inset:auto 18px 18px 18px; height:72px; border-radius:0 0 18px 18px; border-top:1px solid rgba(30,35,43,.08); background:repeating-linear-gradient(90deg, rgba(240,90,40,.06) 0 24px, transparent 24px 48px)}
+    .footer{display:flex; justify-content:space-between; gap:18px; align-items:center; flex-wrap:wrap; margin-top:26px; color:var(--muted); font-size:14px}
+    .line{height:1px; background:linear-gradient(90deg, transparent, rgba(30,35,43,.16), transparent); margin:22px 0}
+    @media (max-width: 1040px){.hero,.section-grid,.grid,.steps{grid-template-columns:1fr}.top{flex-direction:column;align-items:flex-start}h1{max-width:none}}
+    @media (max-width: 640px){.wrap{width:min(100% - 20px, var(--max))}.section{padding:20px}.lead{font-size:16px}.pill{font-size:13px}.mock{padding:14px}.card{padding:16px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <a class="brand" href="#">
+        <svg class="logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#F05A28" />
+              <stop offset="100%" stop-color="#D94B23" />
+            </linearGradient>
+          </defs>
+          <path d="M32 3C44 3 55 14 55 27c0 10-7 17-12 24-4 5-8 10-11 18-3-8-7-13-11-18C16 44 9 37 9 27 9 14 20 3 32 3Z" fill="url(#g)"/>
+          <circle cx="32" cy="26" r="4" fill="#FFF5E8"/>
+          <path d="M32 10c4 3 8 8 8 13 0 5-4 9-8 12-4-3-8-7-8-12 0-5 4-10 8-13Z" fill="none" stroke="#FFF5E8" stroke-width="4" stroke-linecap="round"/>
+          <path d="M18 27l7 4m21-4l-7 4m-7 21v-7m0-15v-7" stroke="#FFF5E8" stroke-width="4" stroke-linecap="round"/>
+          <path d="M18 40c5 4 9 6 14 6s9-2 14-6" fill="none" stroke="#FFF5E8" stroke-width="4" stroke-linecap="round"/>
+          <path d="M23 47c3 2 5 3 9 3s6-1 9-3" fill="none" stroke="#FFF5E8" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <span>Sameep</span>
+      </a>
+      <div class="pill">Nearby reminders for saved places</div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <div class="eyebrow"><i></i>Private location nudges, without noise</div>
+          <h1>When you’re nearby, Sameep remembers.</h1>
+          <p class="lead">A quiet reminder for places you saved from Maps, Instagram, and food apps — with radius and schedule control built in.</p>
+          <div class="cta">
+            <a class="btn primary" href="#waitlist">Join the waitlist</a>
+            <a class="btn secondary" href="#preview">See preview</a>
+          </div>
+          <div class="chips">
+            <span class="chip">Radius control</span>
+            <span class="chip">Quiet hours</span>
+            <span class="chip">Private by design</span>
+          </div>
+        </div>
+
+        <div class="panel mock" id="preview" aria-label="Product preview">
+          <div class="mock-top">
+            <div class="status"><span class="dot"></span>Location check active</div>
+            <div class="mini">Today, 6:40 PM</div>
+          </div>
+          <div class="card">
+            <div class="place">
+              <div>
+                <h3>Blue Tokai, Bandra</h3>
+                <p>Saved from Instagram · 420 m away</p>
+              </div>
+              <div class="badge">Within range</div>
+            </div>
+            <div class="row">
+              <div>
+                <div class="label">Radius</div>
+                <div class="slider"></div>
+              </div>
+              <div class="schedule">
+                <div class="label">Schedule</div>
+                <strong>8 AM - 10 PM</strong>
+              </div>
+            </div>
+          </div>
+          <div class="notif">
+            <div class="icon">↗</div>
+            <div>
+              <strong>Sameep reminder</strong>
+              <p>You’re nearby. Open Blue Tokai while you’re here.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section">
+        <h2>Built to stay out of the way</h2>
+        <p>Modern, minimal, and warm — calm spacing, soft surfaces, and subtle geometry that keeps the focus on the product.</p>
+        <div class="steps">
+          <div class="step"><div class="num">1</div><strong>Save a place</strong><p>Import from your favorite apps or add links manually in seconds.</p></div>
+          <div class="step"><div class="num">2</div><strong>Choose the rule</strong><p>Set distance, notification windows, and quiet hours for each place.</p></div>
+          <div class="step"><div class="num">3</div><strong>Get the nudge</strong><p>Receive a gentle reminder only when it matters and you’re nearby.</p></div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="feature"><div class="icon">◎</div><h4>Simple radius control</h4><p>Adjust how close counts as “nearby” with a clear, friendly slider.</p></div>
+        <div class="feature"><div class="icon">◌</div><h4>Schedule-based alerts</h4><p>Set active hours so notifications stay useful, not noisy.</p></div>
+        <div class="feature"><div class="icon">✦</div><h4>Private by default</h4><p>Keep reminders focused on the user’s own saved places and preferences.</p></div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
