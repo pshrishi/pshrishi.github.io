@@ -114,23 +114,17 @@
             const hostname = window.location.hostname;
             const pathname = window.location.pathname;
             
-            // const isCustomDomain = !hostname.endsWith('.github.io');
+            const isCustomDomain = !hostname.endsWith('.github.io');
             
             let user = "pshrishi";
             let repo = "pshrishi.github.io";
 
             if (isCustomDomain) {
-                // HARDCODE YOUR DATA HERE IF USING A CUSTOM DOMAIN:
-                statusEl.textContent = "Custom domain detected. Please configure user/repo in script.";
-                return;
             } else {
                 user = hostname.split('.')[0];
                 // Extracts repo name from subfolder, or defaults to username.github.io repo
                 repo = pathname.split('/')[1] || `${user}.github.io`;
             }
-
-            print("User - " + user);
-            print("Repo - " + repo)
 
             // GitHub API endpoint to list root directory contents
             const apiUrl = `https://github.com{user}/${repo}/contents/`;
